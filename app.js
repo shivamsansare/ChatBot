@@ -7,15 +7,18 @@ var express=require('express'),
     mongoose=require("mongoose");
 
 mongoose.connect(keys.api.mongoDb);
+app.set("view engine","ejs");
+
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
+
 
 numberUrl="http://numbersapi.com/";
 weatherUrl="http://api.openweathermap.org/data/2.5/weather?q="
 
 
 app.get("/",function(req,res){
-    res.send("here");
+    res.render("index");
 });
 
 app.post("/",function(req,res){
