@@ -100,8 +100,8 @@ app.post("/",function(req,res){
     }
 });
 
-const PORT=5000;
+//const PORT=5000;
 
-app.listen(PORT,function(req,res){
+app.listen(process.env.PORT,process.env.IP,function(req,res){
     console.log("hello");
 })
