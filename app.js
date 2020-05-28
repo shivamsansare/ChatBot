@@ -4,6 +4,7 @@ var express=require('express'),
     keys=require('./keys'),
     request=require("request"),
     Booking=require("./models/booking"),
+    nodemailer=require('nodemailer');
     mongoose=require("mongoose");
 
 mongoose.connect(keys.api.mongoDb);
@@ -30,7 +31,7 @@ app.post("/",function(req,res){
         var book=contextParams['date-time'].date_time;
         var bookDate=new Date(book);
         var email=contextParams['email.original'];
-        var newBooking={username:email,date:bookDate};
+        var newBooking={name:email,date:bookDate};
         Booking.create(newBooking,function(err,newBook){
             if(err){
                 console.log(err);
@@ -40,8 +41,31 @@ app.post("/",function(req,res){
                 if(newBook==null){
                     return res.json({'fulfillmentText':"Some Error Occurred"});
                 }
-                else{           
-                    return res.json({'fulfillmentText':"Successfully Booked"});
+                else{  
+                    var reply="Successfully Booked appointment on "+newBook.date.toDateString()+" at "+newBook.date.toTimeString();
+                    var transporter=nodemailer.createTransport({
+                        service:'gmail',
+                        auth:{
+                            user:keys.api.gmail,
+                            pass:keys.api.password
+                        }
+                    });       
+                    var mailOptions={
+                        from:keys.api.gmail,
+                        to:newBook.name,
+                        subject:"Successfully booked appointment",
+                        text:reply
+                    };
+                    transporter.sendMail(mailOptions,function(err,info){
+                        if(err){
+                            console.log(err);
+                        }
+                        else{
+                            console.log("Email details: "+info.response);
+                        }
+                    });
+
+                    return res.json({'fulfillmentText':reply});
                 }
             }
         })
