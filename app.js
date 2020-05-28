@@ -11,6 +11,7 @@ app.set("view engine","ejs");
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
+app.use(express.static(__dirname+"/public"));
 
 
 numberUrl="http://numbersapi.com/";
@@ -99,8 +100,8 @@ app.post("/",function(req,res){
     }
 });
 
-//const PORT=5000;
+const PORT=5000;
 
-app.listen(process.env.PORT,process.env.IP,function(req,res){
+app.listen(PORT,function(req,res){
     console.log("hello");
 })
